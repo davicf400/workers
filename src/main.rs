@@ -39,7 +39,7 @@ async fn main() {
             
         )
         .route(
-            "/funcionarios/:id", 
+            "/funcionarios/{id}", 
             delete(handlers::funcionario_handler::excluir_funcionario)
             .put(handlers::funcionario_handler::editar_funcionario)
         )
@@ -50,7 +50,7 @@ async fn main() {
            
         )
         .route(
-            "/produtos/:id", 
+            "/produtos/{id}", 
             delete(handlers::produto_handler::excluir_produto)
              .put(handlers::produto_handler::editar_produto)
         )
@@ -61,7 +61,7 @@ async fn main() {
            
         )
         .route(
-            "/departamentos/:id", 
+            "/departamentos/{id}", 
             delete(handlers::departamento_handler::excluir_departamento)
              .put(handlers::departamento_handler::editar_departamento)
         )
@@ -72,7 +72,7 @@ async fn main() {
             
         )
         .route(
-            "/fornecedores/:id", 
+            "/fornecedores/{id}", 
             delete(handlers::fornecedor_handler::excluir_fornecedor)
             .put(handlers::fornecedor_handler::editar_fornecedor)
         )
