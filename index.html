@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Gestão</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #7b68ee;
+            --bg-color: #f7f8f9;
+            --sidebar-bg: #ffffff;
+            --text-main: #333333;
+            --text-light: #87909e;
+            --border-color: #e9ebf0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+        /* Menu Lateral */
+        .sidebar { width: 250px; background-color: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; }
+        .logo { padding: 20px; font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-color); }
+        .logo i { color: var(--primary); }
+        .nav-links { padding: 20px 10px; list-style: none; }
+        .nav-links button { width: 100%; background: none; border: none; text-align: left; padding: 12px 15px; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--text-main); cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.2s; }
+        .nav-links button:hover { background-color: #f0f1f5; color: var(--primary); }
+        .nav-links button i { color: var(--text-light); width: 20px; }
+
+        /* Área Principal */
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+        .header { background-color: #ffffff; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
+        .btn-primary { background: linear-gradient(135deg, #7b68ee 0%, #9d8df2 100%); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 6px rgba(123, 104, 238, 0.25); transition: 0.2s; }
+        .btn-primary:active { transform: scale(0.95); }
+        
+        /* Tabela e Conteúdo */
+        .content-area { padding: 30px; }
+        .card { background-color: #ffffff; border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 16px 20px; text-align: left; font-size: 14px; border-bottom: 1px solid var(--border-color); }
+        th { background-color: #fafbfc; font-size: 12px; font-weight: 600; color: var(--text-light); text-transform: uppercase; }
+        tr:hover td { background-color: #fcfcfd; }
+        .acoes-btn { background: none; border: none; cursor: pointer; font-size: 16px; margin-right: 10px; color: var(--text-light); transition: 0.2s; }
+        .acoes-btn.edit:hover { color: #f59e0b; }
+        .acoes-btn.delete:hover { color: #ef4444; }
+
+        /* Modal */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-box { background: white; padding: 30px; border-radius: 12px; width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .modal-box h2 { margin-bottom: 20px; font-size: 18px; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 12px; color: var(--text-light); margin-bottom: 5px; text-transform: uppercase; }
+        .input-group input { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 14px; }
+        .modal-acoes { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+        .btn-cancel { background: white; border: 1px solid var(--border-color); padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: 500; }
+        .btn-cancel:hover { background-color: #f7f8f9; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo"><i class="fa-solid fa-layer-group"></i> Workspace</div>
+        <ul class="nav-links">
+            <li><button onclick="buscarDados('departamentos', 'Departamentos')"><i class="fa-solid fa-building"></i> Departamentos</button></li>
+            <li><button onclick="buscarDados('funcionarios', 'Funcionários')"><i class="fa-solid fa-users"></i> Funcionários</button></li>
+            <li><button onclick="buscarDados('produtos', 'Produtos')"><i class="fa-solid fa-box"></i> Produtos</button></li>
+            <li><button onclick="buscarDados('fornecedores', 'Fornecedores')"><i class="fa-solid fa-truck"></i> Fornecedores</button></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1 id="titulo-pagina">Dashboard</h1>
+            <button class="btn-primary" onclick="abrirModal()">+ Novo Registro</button>
+        </div>
+        <div class="content-area">
+            <div class="card" id="conteudo">
+                <div style="padding: 40px; text-align: center; color: #87909e;">
+                    <i class="fa-solid fa-chart-simple" style="font-size: 40px; margin-bottom: 15px; opacity: 0.5;"></i>
+                    <p>Selecione um módulo no menu lateral.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal-box">
+            <h2 id="modal-titulo">Adicionar Novo</h2>
+            <div id="modal-inputs"></div>
+            <div class="modal-acoes">
+                <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+                <button class="btn-primary" onclick="salvarDados()">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let moduloAtual = ''; 
+        let colunasAtuais = []; 
+        let dadosCarregados = []; 
+        let modoAtual = 'criar'; 
+        let idEmEdicao = null;
+
+        async function buscarDados(rota, titulo) {
+            moduloAtual = rota;
+            document.getElementById('titulo-pagina').innerText = titulo;
+            const divConteudo = document.getElementById('conteudo');
+            divConteudo.innerHTML = '<p style="padding: 20px; text-align: center;">Carregando...</p>';
+            
+            try {
+                const resposta = await fetch(`http://localhost:3000/${rota}`);
+                if (!resposta.ok) throw new Error('Erro na requisição GET');
+                
+                dadosCarregados = await resposta.json(); 
+                
+                if (dadosCarregados.length === 0) {
+                    divConteudo.innerHTML = '<p style="padding: 20px; text-align: center; color: #87909e;">Nenhum registro encontrado.</p>';
+                    return;
+                }
+
+                colunasAtuais = Object.keys(dadosCarregados[0]);
+                
+                let tabelaHTML = '<table><thead><tr>';
+                colunasAtuais.forEach(col => { tabelaHTML += `<th>${col}</th>`; });
+                tabelaHTML += '<th>AÇÕES</th></tr></thead><tbody>';
+                
+                dadosCarregados.forEach(item => {
+                    tabelaHTML += '<tr>';
+                    colunasAtuais.forEach(col => { 
+                        if(col === 'id') {
+                            tabelaHTML += `<td style="color: #87909e; font-weight: 500;">#${item[col]}</td>`;
+                        } else {
+                            tabelaHTML += `<td>${item[col]}</td>`;
+                        }
+                    });
+                    tabelaHTML += `
+                        <td>
+                            <button class="acoes-btn edit" onclick="abrirModalEdicao(${item.id})"><i class="fa-solid fa-pen"></i></button>
+                            <button class="acoes-btn delete" onclick="deletarDado(${item.id})"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>`;
+                });
+                
+                tabelaHTML += '</tbody></table>';
+                divConteudo.innerHTML = tabelaHTML;
+            } catch (erro) {
+                divConteudo.innerHTML = `<p style="padding: 20px; color: #dc2626;">Erro: Backend não respondeu.</p>`;
+            }
+        }
+
+        function abrirModal() {
+            if (!moduloAtual) return alert('Selecione um módulo no menu lateral primeiro!');
+            if (colunasAtuais.length === 0) return alert('Não há estrutura definida para este módulo ainda.');
+            
+            modoAtual = 'criar';
+            idEmEdicao = null;
+            document.getElementById('modal-titulo').innerText = 'Adicionar Novo Registro';
+            montarInputsModal();
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function abrirModalEdicao(id) {
+            modoAtual = 'editar';
+            idEmEdicao = id;
+            document.getElementById('modal-titulo').innerText = `Editar Registro #${id}`;
+            montarInputsModal();
+            
+            const item = dadosCarregados.find(d => d.id === id);
+            colunasAtuais.forEach(col => {
+                if(col !== 'id') {
+                    // O valor bruto que vem do banco
+                    let valor = item[col];
+                    // Formata se for um número que precisa virar string no input
+                    if (valor === null || valor === undefined) valor = '';
+                    document.getElementById(`input-${col}`).value = valor;
+                }
+            });
+            
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function montarInputsModal() {
+            const divInputs = document.getElementById('modal-inputs');
+            divInputs.innerHTML = '';
+            colunasAtuais.forEach(col => {
+                if(col !== 'id') {
+                    divInputs.innerHTML += `
+                        <div class="input-group">
+                            <label>${col}</label>
+                            <input type="text" id="input-${col}" placeholder="Digite ${col}">
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        function fecharModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        async function salvarDados() {
+            let payload = {};
+            // Monta o objeto dinamicamente (precisa casar com a struct do seu Rust)
+            colunasAtuais.forEach(col => {
+                if(col !== 'id') {
+                    let valor = document.getElementById(`input-${col}`).value;
+                    // Se for número (como telefone ou id_departamento), o JS precisa mandar como número, não texto!
+                    // Aqui fazemos um cast simples se o valor for numérico:
+                    if (!isNaN(valor) && valor.trim() !== "") {
+                        valor = Number(valor);
+                    }
+                    payload[col] = valor;
+                }
+            });
+
+            const url = modoAtual === 'criar' 
+                ? `http://localhost:3000/${moduloAtual}` 
+                : `http://localhost:3000/${moduloAtual}/${idEmEdicao}`;
+                
+            const metodo = modoAtual === 'criar' ? 'POST' : 'PUT';
+
+            try {
+                const resposta = await fetch(url, {
+                    method: metodo,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if(!resposta.ok) {
+                    const msgErro = await resposta.text();
+                    throw new Error(`Erro ${resposta.status}: ${msgErro}`);
+                }
+                
+                fecharModal();
+                buscarDados(moduloAtual, document.getElementById('titulo-pagina').innerText);
+            } catch (erro) {
+                alert(`Erro ao salvar no backend:\n${erro.message}`);
+            }
+        }
+
+        async function deletarDado(id) {
+            if(confirm(`Tem certeza que deseja apagar o registro #${id}?`)) {
+                try {
+                    const resposta = await fetch(`http://localhost:3000/${moduloAtual}/${id}`, {
+                        method: 'DELETE'
+                    });
+                    if(!resposta.ok) throw new Error('Falha na requisição DELETE');
+                    
+                    buscarDados(moduloAtual, document.getElementById('titulo-pagina').innerText);
+                } catch (erro) {
+                    alert('Erro ao tentar deletar no backend!');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
