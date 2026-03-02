@@ -36,41 +36,45 @@ async fn main() {
             "/funcionarios", 
             get(handlers::funcionario_handler::consultar_funcionario)
             .post(handlers::funcionario_handler::criar_funcionario)
-            .put(handlers::funcionario_handler::editar_funcionario)
+            
         )
         .route(
-            "/funcionarios/{id}", 
+            "/funcionarios/:id", 
             delete(handlers::funcionario_handler::excluir_funcionario)
+            .put(handlers::funcionario_handler::editar_funcionario)
         )
         .route(
             "/produtos", 
             get(handlers::produto_handler::consultar_produtos)
             .post(handlers::produto_handler::criar_produto)
-            .put(handlers::produto_handler::editar_produto)
+           
         )
         .route(
-            "/produtos/{id}", 
+            "/produtos/:id", 
             delete(handlers::produto_handler::excluir_produto)
+             .put(handlers::produto_handler::editar_produto)
         )
         .route(
             "/departamentos", 
             get(handlers::departamento_handler::consultar_departamentos)
             .post(handlers::departamento_handler::criar_departamento)
-            .put(handlers::departamento_handler::editar_departamento)
+           
         )
         .route(
-            "/departamentos/{id}", 
+            "/departamentos/:id", 
             delete(handlers::departamento_handler::excluir_departamento)
+             .put(handlers::departamento_handler::editar_departamento)
         )
         .route(
             "/fornecedores", 
             get(handlers::fornecedor_handler::consultar_fornecedores)
             .post(handlers::fornecedor_handler::criar_fornecedor)
-            .put(handlers::fornecedor_handler::editar_fornecedor)
+            
         )
         .route(
-            "/fornecedores/{id}", 
+            "/fornecedores/:id", 
             delete(handlers::fornecedor_handler::excluir_fornecedor)
+            .put(handlers::fornecedor_handler::editar_fornecedor)
         )
         .with_state(estado);
 
